@@ -8,16 +8,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.zl.testplace.constant.Constant;
-import com.zl.testplace.utils.CameraUtils;
+import com.zl.testplace.utils.ImageUtils;
+import com.zl.testplace.utils.PictureUtil;
 import com.zl.testplace.utils.UriUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -74,8 +78,8 @@ public class BackgroundActivity extends BaseActivity implements View.OnClickList
     //@AfterPermissionGranted：权限授权回调，当用户在授权之后，会回调带有AfterPermissionGranted对应权限的方法
     @AfterPermissionGranted(Constant.PREMISSION_CAMERA)
     public void openPremissionCamera() {
-        if (CameraUtils.isOpenPremission(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            CameraUtils.startCamer(BackgroundActivity.this, CameraUtils.bgFile, REQUEST_CODE_CAMER);
+        if (ImageUtils.isOpenPremission(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ImageUtils.startCamer(BackgroundActivity.this, ImageUtils.bgFile, REQUEST_CODE_CAMER);
         } else {
             EasyPermissions.requestPermissions(BackgroundActivity.this, "您需要打开拍照权限以及读取相册权限", Constant.PREMISSION_CAMERA, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
@@ -83,8 +87,8 @@ public class BackgroundActivity extends BaseActivity implements View.OnClickList
 
     @AfterPermissionGranted(Constant.PREMISSION_WRITE_EXTERNAL_STORAGE)
     public void openPremissionAblum() {
-        if (CameraUtils.isOpenPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            CameraUtils.startAlbum(BackgroundActivity.this, REQUEST_CODE_ALBUM);
+        if (ImageUtils.isOpenPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ImageUtils.startAlbum(BackgroundActivity.this, REQUEST_CODE_ALBUM);
         } else {
             EasyPermissions.requestPermissions(BackgroundActivity.this, "您需要打开读取相册权限", Constant.PREMISSION_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -100,15 +104,30 @@ public class BackgroundActivity extends BaseActivity implements View.OnClickList
             case REQUEST_CODE_ALBUM://相册
                 Uri dataUri = data.getData();
                 Log.i("mengyuanuri", "相册uri:" + dataUri.getScheme() + ":" + dataUri.getSchemeSpecificPart());
-                Bitmap bitmapAlbum = BitmapFactory.decodeFile(UriUtil.getPath(dataUri));
+                //压缩图片
+                Bitmap bitmapAlbum = PictureUtil.getSmallBitmap(UriUtil.getPath(dataUri), 720, 1080);
+                //保存图片到根目录的AAA文件夹
+                String saveDir = Environment.getExternalStorageDirectory() + File.separator + "AAA";
+                File file = new File(saveDir);
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");//20170913141830
+                String filePath = saveDir + File.separator + time.format(new Date()) + ".jpg";
+                com.blankj.utilcode.util.ImageUtils.save(bitmapAlbum, filePath, Bitmap.CompressFormat.JPEG);
+//                Bitmap bitmapAlbum = BitmapFactory.decodeFile(UriUtil.getPath(dataUri));
                 ivBg.setImageBitmap(bitmapAlbum);
                 break;
             case REQUEST_CODE_CAMER://相机
-                File bgPath = CameraUtils.bgFile;
+                File bgPath = ImageUtils.bgFile;
                 Log.i("mengyuanuri", "回调的Path:" + bgPath.getPath());
                 Bitmap bitmapCamer = BitmapFactory.decodeFile(bgPath.getPath());
                 ivBg.setImageBitmap(bitmapCamer);
                 break;
         }
     }
+
+//    public static String getAllTime() {
+//        return sdfAllTime.format(new Date());
+//    }
 }

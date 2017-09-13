@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.zl.testplace.utils.CameraUtils;
+import com.zl.testplace.utils.ImageUtils;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class BaseActivity extends AppCompatActivity implements EasyPermissions.P
         Log.i("mengyuanrequest", "权限获取失败:" + requestCode + ":" + perms.size());
         //如果权限已经被拒绝，则弹出提示框提示用户打开权限
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this, CameraUtils.getPermissionNameByCode(requestCode) + "权限被拒绝了")
+            new AppSettingsDialog.Builder(this, ImageUtils.getPermissionNameByCode(requestCode) + "权限被拒绝了")
                     .setTitle("权限被拒绝啦")
                     .setPositiveButton("设置")
                     .setNegativeButton("取消", null /* click listener */)

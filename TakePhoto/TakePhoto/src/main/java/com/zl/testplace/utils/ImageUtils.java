@@ -29,7 +29,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * @date 2017/9/12 14:52
  * @E-mail 764958658@qq.com
  */
-public class CameraUtils {
+public class ImageUtils {
 
     //存放背景的File路径
     public static File bgFile = new File(Environment.getExternalStorageDirectory(), "photo_bg.jpg");

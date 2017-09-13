@@ -14,10 +14,10 @@ import com.zl.testplace.App;
 
 
 /**
- * Author：mengyuan
- * Date  : 2017/7/27下午6:12
- * E-Mail:mengyuanzz@126.com
- * Desc  :
+ *
+ * @author zl
+ * @date 2017/9/13 12:05
+ * @E-mail 764958658@qq.com
  */
 
 public class UriUtil {

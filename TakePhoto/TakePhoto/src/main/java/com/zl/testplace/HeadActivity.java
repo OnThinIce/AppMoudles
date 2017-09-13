@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 import com.zl.testplace.bean.CropBean;
 import com.zl.testplace.constant.Constant;
-import com.zl.testplace.utils.CameraUtils;
+import com.zl.testplace.utils.ImageUtils;
 import com.zl.testplace.utils.ScreenUtils;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -60,9 +60,9 @@ public class HeadActivity extends BaseActivity implements View.OnClickListener {
         albumCropBean.outputY = ScreenUtils.dp2Px(55);
         albumCropBean.caculateAspect();
         albumCropBean.isReturnData = false;
-        albumCropBean.saveUri = Uri.fromFile(CameraUtils.headPortraitFile);
+        albumCropBean.saveUri = Uri.fromFile(ImageUtils.headPortraitFile);
         //跳转裁剪
-        CameraUtils.startCrop(this, albumCropBean, REQUEST_CODE_CROP);
+        ImageUtils.startCrop(this, albumCropBean, REQUEST_CODE_CROP);
     }
 
     @Override
@@ -75,10 +75,10 @@ public class HeadActivity extends BaseActivity implements View.OnClickListener {
                 startCrop(data.getData());
                 break;
             case REQUEST_CODE_CAMER://相机
-                startCrop(Uri.fromFile(CameraUtils.headPortraitFile));
+                startCrop(Uri.fromFile(ImageUtils.headPortraitFile));
                 break;
             case REQUEST_CODE_CROP://裁剪完成
-                Bitmap cropBitmap = BitmapFactory.decodeFile(CameraUtils.headPortraitFile.getPath());
+                Bitmap cropBitmap = BitmapFactory.decodeFile(ImageUtils.headPortraitFile.getPath());
                 ivHead.setImageBitmap(cropBitmap);
                 break;
         }
@@ -111,8 +111,8 @@ public class HeadActivity extends BaseActivity implements View.OnClickListener {
     //@AfterPermissionGranted：权限授权回调，当用户在授权之后，会回调带有AfterPermissionGranted对应权限的方法
     @AfterPermissionGranted(Constant.PREMISSION_CAMERA)
     public void openPremissionCamera() {
-        if (CameraUtils.isOpenPremission(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            CameraUtils.startCamer(HeadActivity.this, CameraUtils.headPortraitFile, REQUEST_CODE_CAMER);
+        if (ImageUtils.isOpenPremission(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ImageUtils.startCamer(HeadActivity.this, ImageUtils.headPortraitFile, REQUEST_CODE_CAMER);
         } else {
             EasyPermissions.requestPermissions(HeadActivity.this, "您需要打开拍照权限以及读取相册权限", Constant.PREMISSION_CAMERA, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
@@ -120,8 +120,8 @@ public class HeadActivity extends BaseActivity implements View.OnClickListener {
 
     @AfterPermissionGranted(Constant.PREMISSION_WRITE_EXTERNAL_STORAGE)
     public void openPremissionAblum() {
-        if (CameraUtils.isOpenPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            CameraUtils.startAlbum(HeadActivity.this, REQUEST_CODE_ALBUM);
+        if (ImageUtils.isOpenPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ImageUtils.startAlbum(HeadActivity.this, REQUEST_CODE_ALBUM);
         } else {
             EasyPermissions.requestPermissions(HeadActivity.this, "您需要打开读取相册权限", Constant.PREMISSION_WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
